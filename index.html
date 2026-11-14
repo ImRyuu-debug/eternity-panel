@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NosLegacy · Raid</title>
+<title>Eternity · Raid</title>
 <style>
   :root {
     --s: 1;
@@ -166,15 +166,15 @@
       <div class="chip dmg"><svg><use href="#i-sword"/></svg><b id="total">0</b></div>
       <div class="boss" id="boss"><svg><use href="#i-skull"/></svg><div class="hp"><i id="hpbar" style="width:0"></i><span id="hptxt">—</span></div></div>
     </div>
-    <div class="podium" id="podium"><div class="empty">Esperando datos del raid…</div></div>
+    <div class="podium" id="podium"><div class="empty">Waiting for raid data…</div></div>
     <div class="tabs">
-      <button class="tab" data-tab="all" title="Todo"><svg><use href="#i-all"/></svg></button>
-      <button class="tab" data-tab="dps" title="DPS al jefe"><svg><use href="#i-sword"/></svg></button>
-      <button class="tab" data-tab="taken" title="Daño recibido"><svg><use href="#i-shield"/></svg></button>
-      <button class="tab" data-tab="heal" title="Curación"><svg><use href="#i-heal"/></svg></button>
-      <button class="tab" data-tab="perf" title="Rendimiento"><svg><use href="#i-star"/></svg></button>
+      <button class="tab" data-tab="all" title="All"><svg><use href="#i-all"/></svg></button>
+      <button class="tab" data-tab="dps" title="Boss DPS"><svg><use href="#i-sword"/></svg></button>
+      <button class="tab" data-tab="taken" title="Damage taken"><svg><use href="#i-shield"/></svg></button>
+      <button class="tab" data-tab="heal" title="Healing"><svg><use href="#i-heal"/></svg></button>
+      <button class="tab" data-tab="perf" title="Performance"><svg><use href="#i-star"/></svg></button>
     </div>
-    <div class="list" id="list"><div class="empty">Esperando datos del raid…</div></div>
+    <div class="list" id="list"><div class="empty">Waiting for raid data…</div></div>
   </div>
 <script>
 (function () {
@@ -244,7 +244,7 @@
         face(r) + '<span class="medal">' + (i + 1) + '</span></div><div class="pnm">' + esc(r[1]) + '</div><div class="pval">' +
         (mainKey === 'perf' ? value('perf', r, true) : value(mainKey, r, true)) + '</div></div>';
     });
-    document.getElementById('podium').innerHTML = pod || '<div class="empty">Sin jugadores</div>';
+    document.getElementById('podium').innerHTML = pod || '<div class="empty">No players</div>';
 
     var h = '';
     rows.forEach(function (r, i) {
@@ -259,7 +259,7 @@
       h = '<div class="row head"><span class="rank"></span><span class="ava" style="border:none;background:none"></span><div class="who"></div><div class="vals">' +
         ['dps', 'taken', 'heal', 'perf'].map(function (c) { return '<span class="val">' + ic(cols[c].icon) + '</span>'; }).join('') + '</div></div>' + h;
     }
-    document.getElementById('list').innerHTML = h || '<div class="empty">Sin jugadores</div>';
+    document.getElementById('list').innerHTML = h || '<div class="empty">No players</div>';
   }
   function read() {
     var raw = location.hash.slice(1); if (!raw) return;
