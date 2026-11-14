@@ -5,70 +5,92 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NosLegacy · Raid</title>
 <style>
-  :root { --s: 1; }
+  :root { --s: 1; --b1: #0b1424; --b2: #12213a; --b3: #1b3358; --line: #2f5a92; --glow: #5fa8ff; --txt: #dce9ff; --dim: #8aa3c7; --gold: #ffd36b; }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
   body {
-    background: #2a1e14 linear-gradient(#3a2a1c, #1c140d);
-    color: #f3e2b8; font: calc(12px * var(--s)) Tahoma, Verdana, sans-serif;
+    background: linear-gradient(180deg, #0d1a2e 0%, #050a14 100%);
+    color: var(--txt); font: calc(11px * var(--s)) Tahoma, Verdana, sans-serif;
     user-select: none; overflow: hidden; display: flex; flex-direction: column;
   }
-  .bar {
-    display: flex; align-items: center; gap: 6px; padding: 5px 7px;
-    background: linear-gradient(#5b4128, #3b2a19); border-bottom: 1px solid #a07a3c;
-    box-shadow: inset 0 1px 0 #8c6a3a;
+  svg { width: 1.25em; height: 1.25em; flex: none; vertical-align: middle; }
+  .top {
+    display: flex; align-items: center; gap: 4px; padding: 3px 5px;
+    background: linear-gradient(180deg, #1d3a66, #0f2240); border-bottom: 1px solid var(--line);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
   }
-  .title { font-weight: bold; color: #ffd774; text-shadow: 1px 1px 0 #000; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .btn {
-    cursor: pointer; padding: 2px 7px; border: 1px solid #9c7438; border-radius: 3px;
-    background: linear-gradient(#6d4f2c, #4a3520); color: #f3e2b8; font: inherit; font-size: .92em;
-    text-shadow: 1px 1px 0 #000;
+  .title { flex: 1; font-weight: bold; color: #fff; text-shadow: 0 0 4px #2f7fff, 1px 1px 0 #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sz { cursor: pointer; width: 1.7em; height: 1.5em; padding: 0; border: 1px solid #3b6aa8; border-radius: 3px; background: linear-gradient(#1e3d6b, #0e2142); color: var(--dim); font: bold .85em Tahoma, sans-serif; }
+  .sz.on { color: #fff; border-color: var(--glow); box-shadow: 0 0 5px rgba(95,168,255,.7); background: linear-gradient(#2c5a9c, #163563); }
+  .stats { display: flex; align-items: center; gap: 8px; padding: 4px 6px; background: var(--b1); border-bottom: 1px solid #1d3558; }
+  .stat { display: flex; align-items: center; gap: 3px; white-space: nowrap; }
+  .stat b { color: #fff; }
+  .boss { flex: 1; display: flex; align-items: center; gap: 4px; min-width: 0; }
+  .hp { flex: 1; height: .95em; border: 1px solid #4a1a1a; border-radius: 6px; background: #1a0707; overflow: hidden; position: relative; min-width: 30px; }
+  .hp i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(#ff6a5a, #b3150c); }
+  .hp span { position: relative; display: block; text-align: center; font-size: .82em; line-height: 1.1em; color: #fff; text-shadow: 1px 1px 0 #000; }
+  .tabs { display: flex; gap: 2px; padding: 4px 5px 0; background: #070e1a; }
+  .tab {
+    flex: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 2px; padding: 3px 0;
+    border: 1px solid #23426d; border-bottom: none; border-radius: 4px 4px 0 0; background: linear-gradient(#142a4b, #0b1a31); color: var(--dim);
+    font: .85em Tahoma, sans-serif;
   }
-  .btn:hover { background: linear-gradient(#866238, #5a4027); }
-  .btn.on { background: linear-gradient(#c79a45, #8c6526); color: #fff; border-color: #ffd774; }
-  .tabs { display: flex; gap: 3px; padding: 5px 7px 0; background: #241910; flex-wrap: wrap; }
-  .tabs .btn { border-radius: 4px 4px 0 0; border-bottom: none; }
-  .info { display: flex; justify-content: space-between; gap: 8px; padding: 5px 9px; background: #1c140d; border-top: 1px solid #a07a3c; border-bottom: 1px solid #5a4027; font-size: .95em; }
-  .info b { color: #ffd774; }
-  .wrap { flex: 1; overflow-y: auto; padding: 6px; }
-  .wrap::-webkit-scrollbar { width: 10px; }
-  .wrap::-webkit-scrollbar-track { background: #1c140d; }
-  .wrap::-webkit-scrollbar-thumb { background: #7a5a30; border: 1px solid #a07a3c; border-radius: 4px; }
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: right; color: #ffd774; font-weight: bold; padding: 3px 5px; border-bottom: 1px solid #a07a3c; white-space: nowrap; }
-  th:first-child, td:first-child { text-align: left; }
-  td { text-align: right; padding: 4px 5px; border-bottom: 1px solid #3d2c1b; white-space: nowrap; position: relative; }
-  tr.me td { background: rgba(255, 215, 116, .10); }
-  tr.me td:first-child { color: #ffd774; }
-  .name { display: flex; align-items: center; gap: 5px; overflow: hidden; text-overflow: ellipsis; max-width: calc(120px * var(--s)); }
-  .lead { color: #ff9a3c; font-size: .9em; }
-  .barcell { position: relative; }
-  .fill { position: absolute; left: 0; top: 3px; bottom: 3px; border-radius: 2px; opacity: .35; }
-  .v { position: relative; }
-  .perf { font-weight: bold; }
-  .p0 { color: #c9b896; } .p1 { color: #8fd17a; } .p2 { color: #6fb6ff; } .p3 { color: #d48cff; } .p4 { color: #ffb43c; }
-  .dead { color: #ff6b5b; }
-  .empty { text-align: center; color: #b8a27a; padding: 30px 10px; line-height: 1.6; }
-  .foot { padding: 4px 8px; background: #1c140d; border-top: 1px solid #5a4027; color: #a8926a; font-size: .85em; text-align: center; }
+  .tab.on { color: #fff; background: linear-gradient(#2a5594, #15315a); border-color: var(--glow); }
+  .list { flex: 1; overflow-y: auto; padding: 3px 4px; background: var(--b2); border-top: 1px solid var(--line); }
+  .list::-webkit-scrollbar { width: 8px; }
+  .list::-webkit-scrollbar-track { background: #08111f; }
+  .list::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #2b5ea3, #1a3c6c); border-radius: 4px; }
+  .row { display: flex; align-items: center; gap: 4px; padding: 3px 4px; margin-bottom: 2px; border: 1px solid #1d3a62; border-radius: 3px; background: linear-gradient(90deg, #13284a, #0c1b33); position: relative; overflow: hidden; }
+  .row.me { border-color: var(--glow); box-shadow: inset 0 0 6px rgba(95,168,255,.35); }
+  .rank { width: 1.3em; text-align: center; color: var(--dim); font-weight: bold; }
+  .row:nth-child(1) .rank { color: var(--gold); }
+  .who { flex: 1; min-width: 0; display: flex; align-items: center; gap: 3px; }
+  .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+  .row.me .nm { color: var(--gold); }
+  .dead { color: #ff7b6b; font-size: .85em; display: flex; align-items: center; }
+  .vals { display: flex; gap: 6px; }
+  .val { display: flex; align-items: center; gap: 2px; white-space: nowrap; min-width: 3.6em; justify-content: flex-end; font-weight: bold; }
+  .fill { position: absolute; left: 0; bottom: 0; height: 2px; }
+  .perf { display: inline-block; min-width: 2.2em; text-align: center; padding: 0 3px; border-radius: 8px; font-weight: bold; color: #08111f; }
+  .empty { text-align: center; color: var(--dim); padding: 20px 8px; line-height: 1.6; }
+  .foot { padding: 2px 5px; background: #050a14; border-top: 1px solid #1d3558; color: #6a83a8; font-size: .82em; text-align: center; }
+  .foot b { color: var(--glow); }
 </style>
 </head>
 <body>
-  <div class="bar">
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-sword" viewBox="0 0 24 24"><path fill="#ff9c4a" d="M20 2l2 2-9.5 9.5-2-2L20 2zM9 12l3 3-2 2-1-1-3.5 3.5-1.5-1.5L7.5 14.5 6.5 13.5 9 12z"/><path fill="#ffd36b" d="M3 19l2 2-1.5 1.5-2-2z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path fill="#ff5d5d" d="M12 2l8 3v6c0 5-3.4 9.4-8 11-4.6-1.6-8-6-8-11V5l8-3z"/><path fill="#fff" opacity=".8" d="M13 6l-4 7h3l-1 5 4-7h-3z"/></symbol>
+    <symbol id="i-heal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#2bbd5a"/><path fill="#fff" d="M10 6h4v4h4v4h-4v4h-4v-4H6v-4h4z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path fill="#ffd36b" d="M12 2l3 6.5 7 .8-5.2 4.8 1.5 7-6.3-3.6-6.3 3.6 1.5-7L2 9.3l7-.8z"/></symbol>
+    <symbol id="i-all" viewBox="0 0 24 24"><path fill="#8fc2ff" d="M3 4h18v3H3zM3 10.5h18v3H3zM3 17h18v3H3z"/></symbol>
+    <symbol id="i-time" viewBox="0 0 24 24"><path fill="#8fc2ff" d="M6 2h12v2l-4.5 7 4.5 7v2H6v-2l4.5-7L6 4z"/><path fill="#ffd36b" d="M9 18l3-4 3 4z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path fill="#ff4d6d" d="M12 21s-8-5.2-8-11a4.5 4.5 0 018-2.8A4.5 4.5 0 0120 10c0 5.8-8 11-8 11z"/></symbol>
+    <symbol id="i-skull" viewBox="0 0 24 24"><path fill="#e8e8e8" d="M12 2C7 2 3.5 5.5 3.5 10c0 2.6 1.2 4.5 3 5.6V19h11v-3.4c1.8-1.1 3-3 3-5.6C20.5 5.5 17 2 12 2z"/><circle cx="8.8" cy="10.5" r="2" fill="#111"/><circle cx="15.2" cy="10.5" r="2" fill="#111"/><path fill="#111" d="M11 14h2l-1 2z"/><path fill="#e8e8e8" d="M8 19h2v3H8zM14 19h2v3h-2z"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path fill="#ffd36b" d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 12H5z"/></symbol>
+  </svg>
+
+  <div class="top">
+    <svg><use href="#i-skull"/></svg>
     <div class="title" id="title">Raid</div>
-    <button class="btn" data-size="0.85">S</button>
-    <button class="btn" data-size="1">M</button>
-    <button class="btn" data-size="1.25">L</button>
+    <button class="sz" data-size="0.85">S</button>
+    <button class="sz" data-size="1">M</button>
+    <button class="sz" data-size="1.2">L</button>
   </div>
-  <div class="tabs" id="tabs">
-    <button class="btn" data-tab="all">Todo</button>
-    <button class="btn" data-tab="dps">DPS</button>
-    <button class="btn" data-tab="taken">Recibido</button>
-    <button class="btn" data-tab="heal">Curación</button>
-    <button class="btn" data-tab="perf">Rendimiento</button>
+  <div class="stats">
+    <div class="stat"><svg><use href="#i-time"/></svg><b id="time">--:--</b></div>
+    <div class="stat"><svg><use href="#i-heart"/></svg><b id="lives">-/-</b></div>
+    <div class="boss"><svg><use href="#i-skull"/></svg><div class="hp"><i id="hpbar" style="width:0"></i><span id="hptxt">—</span></div></div>
   </div>
-  <div class="info"><span>⏱ <b id="time">--:--</b></span><span>❤ <b id="lives">-/-</b></span><span>⚔ <b id="boss">-</b></span></div>
-  <div class="wrap"><div id="body"><div class="empty">Esperando datos del raid…<br>El panel se actualiza solo durante el raid.</div></div></div>
-  <div class="foot">Cierra con la ✕ · <b>$panel</b> para volver a abrirlo · <b>$panel off</b> para no verlo más</div>
+  <div class="tabs">
+    <button class="tab" data-tab="all" title="Todo"><svg><use href="#i-all"/></svg></button>
+    <button class="tab" data-tab="dps" title="DPS al jefe"><svg><use href="#i-sword"/></svg></button>
+    <button class="tab" data-tab="taken" title="Daño recibido"><svg><use href="#i-shield"/></svg></button>
+    <button class="tab" data-tab="heal" title="Curación"><svg><use href="#i-heal"/></svg></button>
+    <button class="tab" data-tab="perf" title="Rendimiento"><svg><use href="#i-star"/></svg></button>
+  </div>
+  <div class="list" id="list"><div class="empty">Esperando datos del raid…</div></div>
+  <div class="foot"><b>$panel</b> abrir · <b>$panel off</b> no mostrar</div>
 <script>
 (function () {
   var store = {
@@ -76,73 +98,68 @@
     set: function (k, v) { try { localStorage.setItem('nlp.' + k, v); } catch (e) {} }
   };
   var size = store.get('size', '1'), tab = store.get('tab', 'all'), last = null;
+  // row: [id, name, isLeader, dps, bossDamage, taken, heal, deaths, perf]
   var cols = {
-    dps:   { label: 'DPS',      key: 3, color: '#ff7a3c' },
-    taken: { label: 'Recibido', key: 5, color: '#ff4d4d' },
-    heal:  { label: 'Curación', key: 6, color: '#5be06b' },
-    perf:  { label: 'Rend.',    key: 8, color: '#ffd774' }
+    dps:   { key: 3, icon: 'i-sword',  color: '#ff9c4a' },
+    taken: { key: 5, icon: 'i-shield', color: '#ff5d5d' },
+    heal:  { key: 6, icon: 'i-heal',   color: '#2bbd5a' },
+    perf:  { key: 8, icon: 'i-star',   color: '#ffd36b' }
   };
-  function fmt(n) {
-    n = +n || 0;
-    if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-    if (n >= 1e4) return (n / 1e3).toFixed(1) + 'k';
-    return Math.round(n).toLocaleString('es-ES');
-  }
+  function ic(id) { return '<svg><use href="#' + id + '"/></svg>'; }
+  function fmt(n) { n = +n || 0; return n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e4 ? (n / 1e3).toFixed(1) + 'k' : String(Math.round(n)); }
   function mmss(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ':' + ('0' + s % 60).slice(-2); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function perfClass(p) { return p >= 85 ? 'p4' : p >= 70 ? 'p3' : p >= 50 ? 'p2' : p >= 30 ? 'p1' : 'p0'; }
-  function applyUi() {
+  function perfColor(p) { return p >= 85 ? '#ffb43c' : p >= 70 ? '#d48cff' : p >= 50 ? '#5fa8ff' : p >= 30 ? '#7ddc6a' : '#9aa7ba'; }
+  function ui() {
     document.documentElement.style.setProperty('--s', size);
     [].forEach.call(document.querySelectorAll('[data-size]'), function (b) { b.classList.toggle('on', b.getAttribute('data-size') === size); });
     [].forEach.call(document.querySelectorAll('[data-tab]'), function (b) { b.classList.toggle('on', b.getAttribute('data-tab') === tab); });
   }
-  // p: [id, name, isLeader, dps, dmgBoss, taken, heal, deaths, perf]
   function render() {
-    applyUi();
-    var d = last;
-    if (!d) return;
+    ui();
+    var d = last; if (!d) return;
     document.getElementById('title').textContent = d.r || 'Raid';
     document.getElementById('time').textContent = mmss(d.t);
     document.getElementById('lives').textContent = (d.l || [0, 0]).join('/');
-    document.getElementById('boss').textContent = d.b == null ? '-' : d.b + '%';
+    var hp = d.b == null ? null : Math.max(0, Math.min(100, d.b));
+    document.getElementById('hpbar').style.width = (hp == null ? 0 : hp) + '%';
+    document.getElementById('hptxt').textContent = hp == null ? '—' : hp + '%';
     var show = tab === 'all' ? ['dps', 'taken', 'heal', 'perf'] : [tab];
-    var rows = (d.p || []).slice();
-    var sortKey = cols[show[0]].key;
-    rows.sort(function (a, b) { return (b[sortKey] || 0) - (a[sortKey] || 0); });
-    var max = {};
-    show.forEach(function (c) { max[c] = Math.max.apply(null, rows.map(function (r) { return +r[cols[c].key] || 0; }).concat([1])); });
-    var h = '<table><tr><th>Jugador</th>';
-    show.forEach(function (c) { h += '<th>' + cols[c].label + '</th>'; });
-    h += '</tr>';
-    rows.forEach(function (r) {
-      h += '<tr' + (r[0] === d.me ? ' class="me"' : '') + '><td><div class="name">' + (r[2] ? '<span class="lead">♛</span>' : '') +
-        esc(r[1]) + (r[7] ? ' <span class="dead">✝' + r[7] + '</span>' : '') + '</div></td>';
+    var main = cols[show[0]];
+    var rows = (d.p || []).slice().sort(function (a, b) { return (b[main.key] || 0) - (a[main.key] || 0); });
+    var max = Math.max.apply(null, rows.map(function (r) { return +r[main.key] || 0; }).concat([1]));
+    var h = '';
+    rows.forEach(function (r, i) {
+      h += '<div class="row' + (r[0] === d.me ? ' me' : '') + '"><span class="rank">' + (i + 1) + '</span><div class="who">' +
+        (r[2] ? ic('i-crown') : '') + '<span class="nm">' + esc(r[1]) + '</span>' +
+        (r[7] ? '<span class="dead">' + ic('i-skull') + r[7] + '</span>' : '') + '</div><div class="vals">';
       show.forEach(function (c) {
         var v = +r[cols[c].key] || 0;
-        if (c === 'perf') { h += '<td class="perf ' + perfClass(v) + '">' + v + '</td>'; return; }
-        var w = tab === 'all' ? 0 : Math.round(v / max[c] * 100);
-        h += '<td class="barcell">' + (w ? '<div class="fill" style="width:' + w + '%;background:' + cols[c].color + '"></div>' : '') +
-          '<span class="v">' + fmt(v) + '</span></td>';
+        h += c === 'perf'
+          ? '<span class="val">' + (tab === 'all' ? '' : ic('i-star')) + '<span class="perf" style="background:' + perfColor(v) + '">' + v + '</span></span>'
+          : '<span class="val" style="color:' + cols[c].color + '">' + (tab === 'all' ? '' : ic(cols[c].icon)) + fmt(v) + '</span>';
       });
-      h += '</tr>';
+      h += '</div>' + (tab === 'all' ? '' : '<i class="fill" style="width:' + Math.round((+r[main.key] || 0) / max * 100) + '%;background:' + main.color + '"></i>') + '</div>';
     });
-    document.getElementById('body').innerHTML = h + '</table>';
+    if (tab === 'all') {
+      h = '<div class="row" style="background:none;border-color:transparent;padding-top:0;padding-bottom:0"><span class="rank"></span><div class="who"></div><div class="vals">' +
+        ['dps', 'taken', 'heal', 'perf'].map(function (c) { return '<span class="val">' + ic(cols[c].icon) + '</span>'; }).join('') + '</div></div>' + h;
+    }
+    document.getElementById('list').innerHTML = h || '<div class="empty">Sin jugadores</div>';
   }
   function read() {
-    var raw = location.hash.slice(1);
-    if (!raw) return;
+    var raw = location.hash.slice(1); if (!raw) return;
     try { last = JSON.parse(decodeURIComponent(raw)); } catch (e) { return; }
     render();
   }
   document.addEventListener('click', function (e) {
-    var b = e.target.closest('button');
-    if (!b) return;
+    var b = e.target.closest('button'); if (!b) return;
     if (b.hasAttribute('data-size')) { size = b.getAttribute('data-size'); store.set('size', size); }
     if (b.hasAttribute('data-tab')) { tab = b.getAttribute('data-tab'); store.set('tab', tab); }
-    render(); applyUi();
+    render(); ui();
   });
   window.addEventListener('hashchange', read);
-  applyUi(); read();
+  ui(); read();
 })();
 </script>
 </body>
